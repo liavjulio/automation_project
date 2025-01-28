@@ -1,7 +1,11 @@
 # python-service/models/database.py
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-MONGO_URI = "mongodb+srv://liavjulio7:Ll456456@bikesafe.8wwo9.mongodb.net/?retryWrites=true&w=majority&appName=bikesafe"
+load_dotenv()
+
+MONGO_URI = os.getenv('MONGO_URI')
 
 # Connect to MongoDB Atlas
 client = MongoClient(MONGO_URI)

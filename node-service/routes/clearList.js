@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
 // MongoDB connection URI and database details
-const uri = "mongodb+srv://liavjulio7:Ll456456@bikesafe.8wwo9.mongodb.net/?retryWrites=true&w=majority&appName=bikesafe";
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 router.delete('/', async (req, res) => {

@@ -1,11 +1,13 @@
 import requests
 from flask import request
 from flask_restful import Resource
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 # Amazon API credentials
-RAPIDAPI_KEY = "d0dd671ba7msh48f3588358a4137p1ca213jsn8232b452d122"
-RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
-
+RAPIDAPI_KEY = os.getenv('RAPIDAPI_KEY')
+RAPIDAPI_HOST = os.getenv('RAPIDAPI_HOST')
 class SearchOnline(Resource):
     def get(self):
         # Extract query parameters
