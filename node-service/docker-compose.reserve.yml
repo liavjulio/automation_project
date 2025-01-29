@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  reserve_server:
+    build: .
+    container_name: reserve_server
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    command: node app.js
+
+  mongodb_reserve:
+    image: mongo:5.0
+    container_name: mongodb_reserve
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data_reserve:/data/db
+
+volumes:
+  mongo_data_reserve:

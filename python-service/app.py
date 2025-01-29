@@ -25,4 +25,4 @@ api.add_resource(SearchItem, '/search-item')
 api.add_resource(SearchOnline , '/search-online')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

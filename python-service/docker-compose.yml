@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: main_app
+    ports:
+      - "5002:5000"
+    volumes:
+      - .:/app
+    command: python3 app.py
+
+  add_item:
+    build: .
+    container_name: add_item_service
+    command: python3 routes/add_item.py
+    depends_on:
+      - app
+    restart: always
+
+  clear_list:
+    build: .
+    container_name: clear_list_service
+    command: python3 routes/clear_list.py
+    depends_on:
+      - app
+    restart: always
+
+  count_items:
+    build: .
+    container_name: count_items_service
+    command: python3 routes/count_items.py
+    depends_on:
+      - app
+    restart: always
+
+  delete_item:
+    build: .
+    container_name: delete_item_service
+    command: python3 routes/delete_item.py
+    depends_on:
+      - app
+    restart: always
+
+  generate_id:
+    build: .
+    container_name: generate_id_service
+    command: python3 routes/generate_id.py
+    depends_on:
+      - app
+    restart: always
+
+  search_item:
+    build: .
+    container_name: search_item_service
+    command: python3 routes/search_item.py
+    depends_on:
+      - app
+    restart: always
+
+  search_online:
+    build: .
+    container_name: search_online_service
+    command: python3 routes/search_online.py
+    depends_on:
+      - app
+    restart: always
+
+  view_list:
+    build: .
+    container_name: view_list_service
+    command: python3 routes/view_list.py
+    depends_on:
+      - app
+    restart: always

@@ -1,19 +1,16 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-
-// Initialize app
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(bodyParser.json());
+// Middleware and Routes
+app.use('/clear-list', require('./routes/clearList'));
+app.use('/count-items', require('./routes/countItems'));
 
-// Import and use routes
-app.use('/clear-list', require(path.join(__dirname, 'routes/clearList')));
-app.use('/count-items', require(path.join(__dirname, 'routes/countItems')));
+// Only start the server if this file is run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+}
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+module.exports = app; // Export the app for testing

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BACKENDS = {
-  python: "http://127.0.0.1:5000", // Python server
+  python: "http://127.0.0.1:5002", // Python server
   node: "http://localhost:3000",  // Node.js backup server
 };
 
