@@ -4,8 +4,8 @@ let server;
 
 function startServer() {
     return new Promise((resolve, reject) => {
-        server = app.listen(3000, () => {
-            console.log('Test server is running on port 3000');
+        server = app.listen(3002, () => {
+            console.log('Test server is running on port 3002');
             resolve(server);
         }).on('error', reject);
     });

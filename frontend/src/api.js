@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BACKENDS = {
   python: "http://127.0.0.1:5002", // Python server
-  node: "http://localhost:3000",  // Node.js backup server
+  node: "http://localhost:3001",  // Node.js backup server
 };
 
 // Axios instances for both servers

@@ -1,10 +1,10 @@
 const { execSync } = require('child_process');
-const request = require('request');
-const fs = require('fs');
+const axios = require('axios');
 
 const DOCKER_COMPOSE_FILE = 'docker-compose.reserve.yml';
 const SERVICES = {
-    "reserve_server": "http://127.0.0.1:3000/count-items",
+    "Clear List": { "url": "http://localhost:3001/clear-list", "method": "DELETE" },
+    "Count Items": { "url": "http://localhost:3001/count-items", "method": "GET" },
 };
 
 function runCommand(command) {
@@ -16,18 +16,22 @@ function runCommand(command) {
     }
 }
 
-function checkService(name, url) {
-    request(url, { timeout: 5000 }, (error, response) => {
-        if (error) {
-            console.log(`❌ ${name} is NOT reachable! Check the service.`);
-        } else if (response.statusCode === 200) {
-            console.log(`✅ ${name} is running successfully.`);
+async function checkService(name, url, method) {
+    try {
+        if (method === "DELETE") {
+            await axios.delete(url, { timeout: 5000 });
         } else {
-            console.log(`⚠️ ${name} is running but returned status code ${response.statusCode}`);
+            await axios.get(url, { timeout: 5000 });
         }
-    });
+        console.log(`✅ ${name} is running successfully.`);
+        return true;
+    } catch (error) {
+        console.log(`⏳ Waiting for ${name}...`);
+        return false;
+    }
 }
 
+// **Start Docker Compose**
 function dockerComposeUp() {
     console.log('🚀 Starting Docker Compose...');
     const output = runCommand(`docker-compose -f ${DOCKER_COMPOSE_FILE} up --build -d`);
@@ -38,16 +42,29 @@ function dockerComposeUp() {
     }
 }
 
-function checkContainers() {
-    console.log('\n🔍 Checking all containers...');
-    Object.entries(SERVICES).forEach(([name, url]) => checkService(name, url));
+// **Wait for Services**
+async function waitForServices() {
+    console.log('⏳ Waiting for containers to be ready...');
+    let attempts = 10;
+    while (attempts > 0) {
+        let allRunning = true;
+        for (const [name, service] of Object.entries(SERVICES)) {
+            const serviceUp = await checkService(name, service.url, service.method);
+            if (!serviceUp) allRunning = false;
+        }
+        if (allRunning) break;
+        attempts--;
+        await new Promise(res => setTimeout(res, 5000)); // Wait 5s before retrying
+    }
 }
 
+// **Restart Failing Containers**
 function restartFailingContainers() {
     console.log('\n🔄 Restarting failing containers...');
     const output = runCommand("docker ps --filter 'status=exited' --format '{{.Names}}'");
+
     if (output) {
-        const failedContainers = output.split('\n');
+        const failedContainers = output.split('\n').filter(name => name.includes('reserve_'));
         failedContainers.forEach(container => {
             console.log(`🔄 Restarting container: ${container}`);
             runCommand(`docker restart ${container}`);
@@ -57,22 +74,21 @@ function restartFailingContainers() {
     }
 }
 
+// **Clean Up Docker**
 function cleanUpDocker() {
     console.log('\n🧹 Cleaning up unused Docker resources...');
     runCommand('docker system prune -f');
     console.log('✅ Docker cleanup complete.');
 }
 
-function main() {
+// **Main Function**
+async function main() {
     console.log('🔧 Reserve Docker Manager Script\n');
     dockerComposeUp();
-    console.log('⏳ Waiting for containers to initialize...');
-    setTimeout(() => {
-        checkContainers();
-        restartFailingContainers();
-        cleanUpDocker();
-        console.log('\n✅ All tasks completed!');
-    }, 10000);
+    await waitForServices(); // ✅ Ensure services are running before checking
+    restartFailingContainers();
+    cleanUpDocker();
+    console.log('\n✅ All tasks completed!');
 }
 
 main();
