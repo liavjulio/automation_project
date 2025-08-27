@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  shared_network:
+
+services:
+  reserve_server:
+    build: .
+    container_name: reserve_server
+    ports:
+      - "3001:3000"
+    networks:
+      - shared_network
+    environment:
+      - MONGO_URI=mongodb+srv://liavjulio7:Ll456456@bikesafe.8wwo9.mongodb.net/?retryWrites=true&w=majority&appName=bikesafe
+    volumes:
+      - .:/app
+    command: node app.js
+
+  clear_list_service:
+    build: .
+    container_name: clear_list_service_reserve
+    command: node routes/clearList.js
+    networks:
+      - shared_network
+    restart: always
+
+  count_items_service:
+    build: .
+    container_name: count_items_service_reserve
+    command: node routes/countItems.js
+    networks:
+      - shared_network
+    restart: always

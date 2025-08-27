@@ -1,0 +1,46 @@
+{
+  "name": "automation-project",
+  "version": "1.0.0",
+  "description": "Full-stack automation project with React frontend, Node.js service, and Python service",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "node-service"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:node\" \"npm run dev:python\"",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:node": "cd node-service && npm run dev",
+    "dev:python": "cd python-service && python app.py",
+    "build": "cd frontend && npm run build",
+    "test": "concurrently \"npm run test:frontend\" \"npm run test:node\" \"npm run test:python\"",
+    "test:frontend": "cd frontend && npm test -- --watchAll=false",
+    "test:node": "cd node-service && npm test",
+    "test:python": "cd python-service && python -m pytest",
+    "install:all": "npm install && cd frontend && npm install && cd ../node-service && npm install && cd ../python-service && pip install -r requirements.txt",
+    "clean": "rm -rf frontend/node_modules node-service/node_modules frontend/build",
+    "format": "concurrently \"cd frontend && prettier --write src/\" \"cd node-service && npm run format\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "prettier": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liavjulio/automation_project.git"
+  },
+  "keywords": [
+    "automation",
+    "react",
+    "nodejs",
+    "python",
+    "flask",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC"
+}

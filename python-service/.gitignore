@@ -1,0 +1,21 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Google Cloud Service Account Key
+service-account.json
+
+# IDE and editor settings
+.idea/
+.vscode/
+
+# Log files
+*.log
